@@ -87,22 +87,67 @@
         /* ===== HERO ===== */
         .hero {
             min-height: 100vh;
+            min-height: 100svh;
             display: flex; align-items: center; justify-content: center;
             text-align: center;
-            background: linear-gradient(180deg, rgba(26,26,26,1) 0%, rgba(26,26,26,0.85) 50%, rgba(26,26,26,1) 100%),
-                        repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(218,165,32,0.03) 40px, rgba(218,165,32,0.03) 80px);
-            padding: 8rem 2rem 4rem;
+            background:
+                linear-gradient(180deg, rgba(26,26,26,1) 0%, rgba(26,26,26,0.88) 50%, rgba(26,26,26,1) 100%),
+                repeating-linear-gradient(50deg, transparent, transparent 200px, rgba(218,165,32,0.025) 200px, rgba(218,165,32,0.025) 201px),
+                repeating-linear-gradient(-50deg, transparent, transparent 280px, rgba(218,165,32,0.035) 280px, rgba(218,165,32,0.035) 281px);
+            padding: 7rem 2rem 5rem;
             position: relative;
             overflow: hidden;
         }
         .hero::before {
             content: ''; position: absolute; top: 50%; left: 50%;
             transform: translate(-50%, -50%);
-            width: 600px; height: 600px;
-            background: radial-gradient(circle, rgba(218,165,32,0.08) 0%, transparent 70%);
+            width: min(600px, 90vw); height: min(600px, 90vw);
+            background: radial-gradient(circle, rgba(218,165,32,0.1) 0%, transparent 70%);
             pointer-events: none;
+            animation: glowPulse 5s ease-in-out infinite alternate;
         }
-        .hero-content { position: relative; z-index: 1; max-width: 800px; }
+        .hero::after {
+            content: ''; position: absolute; inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.06'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 0;
+            mix-blend-mode: overlay;
+        }
+        @keyframes glowPulse {
+            from { opacity: 0.6; transform: translate(-50%, -50%) scale(1); }
+            to   { opacity: 1;   transform: translate(-50%, -50%) scale(1.1); }
+        }
+        .hero-rings {
+            position: absolute; top: calc(50% + 1rem); left: 50%;
+            transform: translate(-50%, -50%);
+            width: min(90vw, 880px); height: auto;
+            color: var(--gold);
+            opacity: 0.35;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .hero-rings .ring-soft { stroke-width: 1.2; opacity: 0.55; }
+        .hero-rings .ring-main { stroke-width: 2; }
+        .hero-rings .ring-core { stroke-width: 1.8; }
+        .hero-rings .ring-tick { stroke-width: 1.6; opacity: 0.7; }
+        .hero-rings .ring-outer {
+            stroke-width: 1.2;
+            opacity: 0.7;
+            transform-box: view-box;
+            transform-origin: center;
+            animation: ringSpin 90s linear infinite;
+        }
+        @keyframes ringSpin {
+            to { transform: rotate(360deg); }
+        }
+        .hero-content {
+            position: relative; z-index: 1; max-width: 800px;
+        }
+        .hero-content::before {
+            content: ''; display: block;
+            width: 40px; height: 2px; background: var(--gold);
+            margin: 0 auto 1.2rem;
+        }
         .hero .badge {
             display: inline-block;
             font-family: var(--font-heading);
@@ -112,19 +157,55 @@
             border: 1px solid var(--gold);
             padding: 0.4rem 1.2rem;
             margin-bottom: 1.5rem;
+            animation: heroFadeUp 0.7s 0.1s forwards ease-out;
+            opacity: 0;
         }
         .hero h1 {
             font-family: var(--font-heading);
-            font-size: clamp(3rem, 8vw, 5.5rem);
+            font-size: clamp(2.4rem, 5.5vw, 4rem);
             font-weight: 700; text-transform: uppercase;
-            line-height: 1.05; letter-spacing: 2px;
-            margin-bottom: 1rem;
+            line-height: 1.2; letter-spacing: 2px;
+            margin-bottom: 1.5rem;
+            animation: heroFadeUp 0.7s 0.25s forwards ease-out;
+            opacity: 0;
         }
-        .hero h1 .accent { color: var(--gold); }
+        .hero h1 .lead {
+            display: inline-block;
+            font-size: 0.6em;
+            font-weight: 500;
+            letter-spacing: 4px;
+            color: #999;
+        }
+        .hero h1 .accent {
+            color: var(--gold);
+            display: inline-block;
+            position: relative;
+            font-size: clamp(2.2rem, 9.5vw, 5.4rem);
+            letter-spacing: 1px;
+        }
+        .hero h1 .accent::after {
+            content: ''; display: block;
+            width: 0; height: 4px; background: var(--gold);
+            margin-top: 0.45rem;
+            animation: drawLine 0.9s 0.85s forwards ease-out;
+        }
         .hero p {
             font-size: 1.15rem; color: #aaa;
             max-width: 550px; margin: 0 auto 2.5rem;
             font-weight: 300;
+            animation: heroFadeUp 0.7s 0.45s forwards ease-out;
+            opacity: 0;
+        }
+        .hero-buttons {
+            animation: heroFadeUp 0.7s 0.6s forwards ease-out;
+            opacity: 0;
+        }
+        @keyframes heroFadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes drawLine {
+            to { width: 100%; }
         }
         .btn {
             display: inline-block;
@@ -210,6 +291,30 @@
             letter-spacing: 1px; color: #888;
         }
 
+        .about-image .ceo-info {
+            position: absolute; bottom: 0; left: 0; width: 100%;
+            padding: 2.5rem 1rem 1.2rem;
+            background: linear-gradient(transparent, rgba(0,0,0,0.85));
+            text-align: center;
+        }
+        .about-image .ceo-info strong {
+            display: block;
+            font-family: var(--font-heading);
+            font-size: 1.1rem; color: var(--gold);
+            text-transform: uppercase; letter-spacing: 1px;
+        }
+        .about-image .ceo-info span {
+            display: block; color: #ccc; font-size: 0.8rem; margin-top: 0.1rem;
+        }
+        .about-image .ceo-info a {
+            display: inline-block; margin-top: 0.4rem;
+            color: var(--gold); font-size: 0.75rem;
+            font-family: var(--font-heading); text-transform: uppercase; letter-spacing: 1px;
+            border: 1px solid var(--gold); padding: 0.25rem 0.8rem;
+            transition: all 0.3s;
+        }
+        .about-image .ceo-info a:hover { background: var(--gold); color: var(--black); }
+
         /* ===== DISCIPLINES ===== */
         .disciplines { background: #141414; }
         .disc-grid {
@@ -237,7 +342,10 @@
             background: rgba(218,165,32,0.1);
             border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
-            font-size: 1.8rem;
+            color: var(--gold);
+        }
+        .disc-icon svg {
+            width: 34px; height: 34px;
         }
         .disc-card h3 {
             font-family: var(--font-heading);
@@ -250,7 +358,7 @@
         /* ===== COACHES ===== */
         .coaches { background: var(--black); }
         .coaches-grid {
-            display: grid; grid-template-columns: repeat(5, 1fr);
+            display: grid; grid-template-columns: repeat(4, 1fr);
             gap: 2rem;
         }
         .coach-card { text-align: center; }
@@ -374,6 +482,7 @@
             margin-bottom: 0.3rem;
         }
         .contact-item .value { color: #ccc; font-size: 0.95rem; }
+        .contact-item .value a:hover { color: var(--gold); }
 
         .cta-buttons {
         display: flex;
@@ -415,12 +524,12 @@
 
         /* ===== RESPONSIVE ===== */
         @media (max-width: 1100px) {
-            .coaches-grid { grid-template-columns: repeat(3, 1fr); }
+            .coaches-grid { grid-template-columns: repeat(2, 1fr); }
         }
         @media (max-width: 992px) {
             .about-grid { grid-template-columns: 1fr; gap: 2rem; }
             .disc-grid { grid-template-columns: 1fr 1fr; }
-            .coaches-grid { grid-template-columns: repeat(3, 1fr); }
+            .coaches-grid { grid-template-columns: repeat(2, 1fr); }
             .gallery-grid { grid-template-columns: repeat(2, 1fr); }
             .gallery-item.wide { grid-column: span 2; }
         }
@@ -437,8 +546,9 @@
             .disc-grid { grid-template-columns: 1fr; }
             .coaches-grid { grid-template-columns: repeat(2, 1fr); }
             .stats-row { gap: 1.5rem; }
-            .hero .btn-outline { margin-left: 0; margin-top: 0.8rem; }
-            .hero .hero-buttons { display: flex; flex-direction: column; align-items: center; gap: 0; }
+            .hero { padding: 5rem 1.5rem 3.5rem; }
+            .hero .btn-outline { margin-left: 0; margin-top: 0; }
+            .hero .hero-buttons { display: flex; flex-direction: column; align-items: center; gap: 0.8rem; }
             .schedule-table { font-size: 0.85rem; }
             .schedule-table thead th, .schedule-table tbody td { padding: 0.7rem 0.5rem; }
             .gallery-grid { grid-template-columns: 1fr 1fr; }
@@ -446,7 +556,8 @@
         @media (max-width: 540px) {
             .coaches-grid { grid-template-columns: 1fr; max-width: 320px; margin: 0 auto; }
         }
-        @media (max-width: 480px) {
+@media (max-width: 480px) {
+            .hero-rings { width: 95vw; }
             .gallery-grid { grid-template-columns: 1fr; }
             .gallery-item.wide { grid-column: span 1; aspect-ratio: 16/9; }
             .stats-row { flex-direction: column; gap: 1rem; }
@@ -478,9 +589,31 @@
 
 <!-- HERO -->
 <section class="hero" id="home">
+    <svg class="hero-rings" viewBox="0 0 1000 1000" fill="none" stroke="currentColor" aria-hidden="true">
+        <defs>
+            <radialGradient id="matFill" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="currentColor" stop-opacity="0.18"/>
+                <stop offset="100%" stop-color="currentColor" stop-opacity="0"/>
+            </radialGradient>
+        </defs>
+        <circle class="ring-fill" cx="500" cy="500" r="340" fill="url(#matFill)" stroke="none"/>
+        <circle class="ring-outer" cx="500" cy="500" r="472" stroke-dasharray="2 14"/>
+        <line class="ring-tick" x1="155" y1="500" x2="165" y2="500"/>
+        <line class="ring-tick" x1="835" y1="500" x2="845" y2="500"/>
+        <line class="ring-tick" x1="500" y1="155" x2="500" y2="165"/>
+        <line class="ring-tick" x1="500" y1="835" x2="500" y2="845"/>
+        <line class="ring-tick" x1="743" y1="257" x2="737" y2="263"/>
+        <line class="ring-tick" x1="257" y1="743" x2="263" y2="737"/>
+        <line class="ring-tick" x1="257" y1="257" x2="263" y2="263"/>
+        <line class="ring-tick" x1="743" y1="743" x2="737" y2="737"/>
+        <circle class="ring-main" cx="500" cy="500" r="340"/>
+        <circle class="ring-soft" cx="500" cy="500" r="260"/>
+        <circle class="ring-core" cx="500" cy="500" r="60"/>
+        <line class="ring-tick" x1="440" y1="500" x2="560" y2="500"/>
+    </svg>
     <div class="hero-content">
         <div class="badge">Wrestling · Grappling · BJJ</div>
-        <h1>Entrena con el <span class="accent">Clan del Suplex</span></h1>
+        <h1><span class="lead">Entrena con el</span><br><span class="accent">Clan del Suplex</span></h1>
         <p>Forjamos luchadores de élite. Disciplina, técnica y hermandad en cada sesión sobre el mat.</p>
         <div class="hero-buttons">
             <a href="#contact" class="btn btn-primary">Comienza Hoy</a>
@@ -500,6 +633,11 @@
         <div class="about-grid">
             <div class="about-image">
             <img src="images/ceo.jpeg" alt="Clan del Suplex">
+                <div class="ceo-info">
+                    <strong>Ramón Cruz</strong>
+                    <span>CEO · Santiago de Chile</span>
+                    <a href="https://maps.app.goo.gl/Z1rRfp5dJtMDV3dBA" target="_blank" rel="noopener">Ver ubicación</a>
+                </div>
             </div>
             <div class="about-text">
                 <h3>Más que una academia, <span class="accent">un clan.</span></h3>
@@ -530,17 +668,14 @@
         </div>
         <div class="disc-grid">
             <div class="disc-card">
-                <div class="disc-icon">🤼</div>
                 <h3>Wrestling</h3>
                 <p>Takedowns, control y lucha en pie con base en wrestling freestyle y grecorromano. Fundamento esencial para cualquier luchador.</p>
             </div>
             <div class="disc-card">
-                <div class="disc-icon">🥋</div>
                 <h3>Grappling</h3>
                 <p>Submission grappling sin gi. Técnicas de control, transiciones y finalizaciones para competencias ADCC y similares.</p>
             </div>
             <div class="disc-card">
-                <div class="disc-icon">🔥</div>
                 <h3>Brazilian Jiu-Jitsu</h3>
                 <p>El arte suave con gi y no-gi. Sistema de cinturones, técnica de guardia, pasajes y sumisiones desde todas las posiciones.</p>
             </div>
@@ -586,16 +721,8 @@
                     <img src="images/iran.jfif" alt="Claudio Vergara">
                 </div>
                 <h3>Claudio Vergara</h3>
-                <div class="role">Wrestling Libre</div>
-                <p class="bio">Destacado competidor de Lucha Estilo Libre, reconocido por su explosividad en el tapiz y su capacidad para transmitir las bases y estrategias de la competencia activa.</p>
-            </div>
-                <div class="coach-card">
-                <div class="coach-photo">
-                    <img src="images/gonzalo.jpeg" alt="Gonzalo Orrego">
-                </div>
-                <h3>Gonzalo Orrego</h3>
-                <div class="role">Bjj Kimono </div>
-                <p class="bio">Especialista en el desarrollo de guardias complejas, inversión de juego y técnicas avanzadas de escape ante posiciones de control estricto.</p>
+                <div class="role">Preparación Deportiva · Nutrición</div>
+                <p class="bio">Especialista en preparación deportiva y nutrición aplicada al rendimiento. Diseña planes de acondicionamiento físico y estrategias alimentarias para que cada atleta del clan llegue en su mejor estado al tapiz.</p>
             </div>
         </div>
     </div>
@@ -621,9 +748,21 @@
                 </thead>
                 <tbody>
                     <tr>
+                        <td>Lunes</td>
+                        <td>19:30 – 21:30</td>
+                        <td>Lucha Olímpica</td>
+                        <td><span class="level-tag all">Todos</span></td>
+                    </tr>
+                    <tr>
                         <td>Miércoles</td>
-                        <td>19:00 – 20:30</td>
-                        <td>Grappling</td>
+                        <td>19:30 – 21:30</td>
+                        <td>Lucha Olímpica</td>
+                        <td><span class="level-tag all">Todos</span></td>
+                    </tr>
+                    <tr>
+                        <td>Viernes</td>
+                        <td>19:30 – 21:30</td>
+                        <td>Lucha Olímpica</td>
                         <td><span class="level-tag all">Todos</span></td>
                     </tr>
                 </tbody>
@@ -669,17 +808,17 @@
         <h2>¿Listo para unirte al <span class="accent">Clan</span>?</h2>
         <p>Ven a conocernos, entrena con nosotros y explota tu potencial.</p>
         <div class="cta-buttons">
-            <a href="https://wa.me/569" target="_blank" class="btn btn-primary">Agenda tu Clase</a>
+            <a href="https://wa.me/56935043930" target="_blank" class="btn btn-primary">Agenda tu Clase</a>
             <a href="https://wa.me/56957118384" target="_blank" class="btn btn-primary">Evaluación Nutricional</a>
         </div>
         <div class="contact-row">
             <div class="contact-item">
                 <div class="label">Ubicación</div>
-                <div class="value">Ñuñoa, Chile</div>
+                <div class="value"><a href="https://maps.app.goo.gl/Z1rRfp5dJtMDV3dBA" target="_blank" rel="noopener">Ramón Cruz Montt 1093-1199, Ñuñoa</a></div>
             </div>
             <div class="contact-item">
                 <div class="label">WhatsApp</div>
-                <div class="value">+569xxxx xxxx</div>
+                <div class="value"><a href="https://wa.me/56935043930" target="_blank" rel="noopener">+569 3504 3930</a></div>
             </div>
             <div class="contact-item">
                 <div class="label">Email</div>
